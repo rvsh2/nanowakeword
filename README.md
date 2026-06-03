@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://pub-812e108f164d4805821c37cb3d3810f1.r2.dev/images/common/logo_0.png" alt="Logo" width="290">
+  <img src="https://pub-812e108f164d4805821c37cb3d3810f1.r2.dev/images/common/logo_0.png" alt="Nanowakeword Logo" width="290">
 </p>
 
 <p align="center">
@@ -27,7 +27,7 @@
 - [FAQ](https://github.com/arcosoph/nanowakeword?tab=readme-ov-file#faq)
 
 ## **Choose Your Architecture, Build Your Pro Model**
-NanoWakeWord is a versatile framework offering a rich library of neural network architectures. Each is optimized for different scenarios, allowing you to build the perfect model for your specific needs. This Colab notebook lets you experiment with any of them.
+Nanowakeword is a versatile framework offering a rich library of neural network architectures. Each is optimized for different scenarios, allowing you to build the perfect model for your specific needs. This Colab notebook lets you experiment with any of them.
 
 | Architecture | Recommended Use Case | Performance Profile | Start Training |
 | :--- | :--- | :--- | :--- |
@@ -79,11 +79,11 @@ student learns from the full output distribution, not just the argmax.
 
 Recognizing that data is the bedrock of any great model, Nanowakeword automates the entire data engineering lifecycle with a pipeline designed for scale and quality:
 
-*   **TTS Model:** Supports multiple TTS models & Speakers.
+*   **TTS Model:** Supports multiple TTS models & Speakers. (Automatic download/Custom)
 
 *   **Phonetic Adversarial Negative Generation:** This is a key differentiator. The system moves beyond generic noise and random words by performing a phonetic analysis of your wake word. It then synthesizes acoustically confusing counter-examples-phrases that sound similar but are semantically different. This forces the model to learn fine-grained phonetic boundaries, dramatically reducing the false positive rate in real-world use.
 
-*   **Augmentation:** The powerful & flexible augmentation engine injects a rich tapestry of real-world acoustic scenarios in real-time. This includes applying background noise at different SNR levels, (Optional: convolving clips with room impulse response (RIR) for realistic reverberation), and applying various other transformations such as pitch shifting and filtering.
+*   **Augmentation:** The powerful & flexible augmentation engine injects a rich tapestry of real-world acoustic scenarios in real-time. **This includes applying background noise at different SNR levels, (Optional: convolving clips with room impulse response (RIR) for realistic reverberation), and applying various other transformations such as pitch shifting and filtering. This allows a small audio set to be expanded into a larger, more diverse set via stochastic augmentation.**
 
 </details>
 
@@ -238,6 +238,8 @@ The primary method for controlling the Nanowakeword framework is through a `.yam
 
 1.  **Prepare Your Data Structure:**
     Organize your raw audio files (`.wav`, `flac` etc.) into their respective subfolders or you can generate synthetic data.
+      > **Important:** The folder structure shown below is only an example. You are free to store your datasets in any location and use any directory structure or naming convention.
+
     ```
     training_data/
     ├── positive/         # Your wake word samples ("hey_nano.wav")
@@ -267,7 +269,7 @@ The primary method for controlling the Nanowakeword framework is through a `.yam
     background_paths:
     - "./training_data/noise"
     rir_paths:
-    - "./training_data/rir"
+    - "./training_data/rir"  # (⚠️ It is better not to use it)
     
     # Enable the stages for a full run
     generate_clips: true
@@ -286,7 +288,7 @@ The primary method for controlling the Nanowakeword framework is through a `.yam
       limit: 3
     # Other...
     ```
-*For a full explanation & all parameters, please see the [`training_config`](https://github.com/arcosoph/nanowakeword/blob/main/examples/training_config.yaml) or [`CONFIGURATION_GUIDE`](https://arcosoph.com/blog/nww_configuration_guide).*
+    **༼ つ ◕_◕ ༽つ For a full explanation & all parameters, please see the [`training_config`](https://github.com/arcosoph/nanowakeword/blob/main/examples/training_config.yaml) or [`CONFIGURATION_GUIDE`](https://arcosoph.com/blog/nww_configuration_guide).**
 
 
 3.  **Execute the Pipeline:**
@@ -443,7 +445,7 @@ In a world of complex machine learning tools, Nanowakeword is built on a simple 
 > Training can be performed on any modern device, including standard CPUs, without requiring specialized hardware. While a dedicated `GPU` can accelerate the process, it is not necessary. The training pipeline is optimized to run efficiently even on low-end systems.
 
 **3. How much data do I need to train a good model?**
-> For a good starting point, we recommend at least 10000+ clean data of your wake words from a few different voices. The total duration of negative audio should be at least 3 times longer than positive audio. You can also create synthetic words using Nanowakeword. The more data you have, the better your model will be. Our intelligent engine is designed to work well even with small datasets.
+> For a good starting point, we recommend at least 10000+ clean data of your wake words from a few different voices. The total duration of negative audio should be at least 3 times longer than positive audio. You can also create synthetic data using **Nanowakeword**. The more data you have, the better your model will be. Our intelligent engine is designed to work well even with small datasets.
 
 **4. Can I train a model for a language other than English?**
 > Yes! Nanowakeword is language-agnostic. As long as you can provide audio samples for your wake words, you can train a model for any language.
