@@ -288,7 +288,7 @@ The primary method for controlling the Nanowakeword framework is through a `.yam
       limit: 3
     # Other...
     ```
-    **༼ つ ◕_◕ ༽つ For a full explanation & all parameters, please see the [`training_config`](https://github.com/arcosoph/nanowakeword/blob/main/examples/training_config.yaml) or [`CONFIGURATION_GUIDE`](https://arcosoph.com/blog/nww_configuration_guide).**
+    **༼ つ ◕_◕ ༽つ For a full explanation & all parameters, please see the [`CONFIGURATION_GUIDE`](https://qutorium.arcosoph.com/post/nanowakeword-configuration-guide-pp1ia5).**
 
 
 3.  **Execute the Pipeline:**
