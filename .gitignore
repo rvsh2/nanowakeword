@@ -224,3 +224,7 @@ My_config.yaml
 
 
 
+
+# Local training artifacts (GBs)
+training_data/
+.claude/

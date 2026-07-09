@@ -141,7 +141,9 @@ def augment_clips(
         "min_pitch_semitones": -2.0, "max_pitch_semitones": 2.0,
         "max_snr_in_db": 30.0, "min_snr_in_db": 5.0,
         "min_gain_in_db": -3.0, "max_gain_in_db": 3.0,
-        "min_volume_augmentation": 0.5, "max_volume_augmentation": 1.0 # For realistic volume levels
+        "min_volume_augmentation": 0.5, "max_volume_augmentation": 1.0, # For realistic volume levels
+        "background_prob": 1.0,  # chance of mixing background noise into a clip
+        "end_align_prob": 0.0,   # chance of placing the foreground near the window end
     }
     if augmentation_settings:
         cfg.update(augmentation_settings)
@@ -215,9 +217,20 @@ def augment_clips(
             # so the foreground always starts at the beginning of the clip.
             # This matches the raw audio generator which crops from a random position
             # but always fills the full clip with audio content.
-            has_real_background = background_clip_paths and bg_wf.abs().max() > 1e-4
-            if has_real_background:
-                start_index = random.randint(0, total_length - fg_len)
+            # background_prob < 1.0 keeps a share of clips clean so the model
+            # also learns the noise-free distribution it will see at inference.
+            has_real_background = (
+                background_clip_paths
+                and bg_wf.abs().max() > 1e-4
+                and random.random() < cfg["background_prob"]
+            )
+            max_start = total_length - fg_len
+            if random.random() < cfg["end_align_prob"]:
+                # Streaming detection scores windows in which the wake word has
+                # just ended, so bias placement toward the end of the window.
+                start_index = random.randint(int(max_start * 0.75), max_start)
+            elif has_real_background:
+                start_index = random.randint(0, max_start)
             else:
                 start_index = 0
             snr_db = random.uniform(cfg["min_snr_in_db"], cfg["max_snr_in_db"])

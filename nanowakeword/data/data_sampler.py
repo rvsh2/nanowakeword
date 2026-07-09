@@ -162,8 +162,10 @@ class DynamicClassAwareSampler(Sampler):
                 # If any required pool is empty, we can't form any batches
                 return 0
 
-            # Calculate how many batches this specific pool can support
-            possible_batches_for_this_pool = total_available_samples // quota
+            # Calculate how many batches this specific pool can support.
+            # Use ceiling with min 1 so very small datasets can still produce
+            # at least one batch by sampling with replacement.
+            possible_batches_for_this_pool = max(1, (total_available_samples + quota - 1) // quota)
 
             # The true number of batches is limited by the smallest pool
             if possible_batches_for_this_pool < min_possible_batches:

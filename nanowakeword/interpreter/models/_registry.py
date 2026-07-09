@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 from nanowakeword.utils.download_files import download_file
 
 
@@ -70,6 +71,19 @@ class ModelRegistry:
         model_dir = self._base_dir / entry["subdir"]
         model_dir.mkdir(parents=True, exist_ok=True)
 
+        # Optional environment override: a directory containing all files from registry.
+        # This is useful in offline environments (e.g. CI, air-gapped hosts).
+        offline_models_dir = os.environ.get("NANOWAKEWORD_MODELS_DIR")
+        if offline_models_dir:
+            offline_root = Path(offline_models_dir)
+            offline_candidates = [
+                offline_root / filename,
+                offline_root / entry["subdir"] / filename,
+            ]
+            for offline_path in offline_candidates:
+                if offline_path.exists():
+                    return offline_path
+
         model_path = model_dir / filename
 
         if not model_path.exists():
@@ -77,7 +91,11 @@ class ModelRegistry:
             try:
                 download_file(entry["url"], str(model_dir))
             except Exception as e:
-                raise IOError(f"Failed to download model: {filename}") from e
+                hint = (
+                    "If you are offline, set NANOWAKEWORD_MODELS_DIR to a directory "
+                    "containing the required model files."
+                )
+                raise IOError(f"Failed to download model: {filename}. {hint}") from e
 
         return model_path
 
